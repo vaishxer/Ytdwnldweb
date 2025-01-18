@@ -1,91 +1,131 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 body {
     font-family: 'Roboto', sans-serif;
-    text-align: center;
-    background: #f8f9fa;
-    color: #333;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .container {
-    max-width: 500px;
-    margin: 50px auto;
+    width: 100%;
+    max-width: 600px;
+    background-color: #ffffff;
     padding: 20px;
-    background: white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
-h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-.created-by {
-    font-size: 14px;
-    color: #666;
-}
-
-.search-box {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.search-box input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.search-box button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.search-box button:hover {
-    background: #0056b3;
-}
-
-.loading {
-    display: none;
-    font-size: 16px;
-    color: #007bff;
-    margin-top: 20px;
-    animation: blink 1s infinite;
-}
-
-@keyframes blink {
-    50% { opacity: 0.5; }
-}
-
-.hidden {
-    display: none;
-}
-
-.buttons {
-    margin-top: 20px;
-}
-
-.buttons button {
-    background: #28a745;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 5px;
+/* Search Bar */
+.search-bar {
     display: flex;
     align-items: center;
-    gap: 5px;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-.buttons button:hover {
-    background: #218838;
+input[type="text"] {
+    width: 80%;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 16px;
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #e60000;
+}
+
+/* Loading Animation */
+#loading {
+    display: none;
+    font-size: 18px;
+    color: #555;
+    margin-top: 15px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Video Preview */
+#video-preview {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f1f1f1;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+#video-preview h3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Download Buttons */
+#download-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.download-btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.download-btn.audio {
+    background-color: #4CAF50;
+}
+
+.download-btn.video {
+    background-color: #007bff;
+}
+
+.download-btn:hover {
+    opacity: 0.8;
+}
+
+/* Footer */
+.credit {
+    font-size: 14px;
+    color: #777;
+    margin-top: 20px;
+}
+
+/* Fade-In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
