@@ -6,8 +6,6 @@
     <title>YouTube Downloader</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
@@ -21,90 +19,93 @@
 
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             background-color: #ffffff;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ff0000;
-            margin-bottom: 10px;
-        }
-
-        .input-container {
-            position: relative;
-            width: 100%;
-            margin-bottom: 15px;
+        .search-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
         }
 
         input[type="text"] {
-            width: 100%;
-            padding: 14px;
+            width: 80%;
+            padding: 12px;
             font-size: 16px;
             border: 2px solid #ddd;
-            border-radius: 30px;
-        }
-
-        .search-btn, .download-btn {
-            width: 100%;
-            padding: 14px;
-            font-size: 16px;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
+            border-radius: 5px;
+            margin-right: 10px;
             transition: all 0.3s ease;
-            font-weight: bold;
         }
 
-        .search-btn {
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
             background-color: #ff0000;
             color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .download-btn.audio {
-            background-color: #28a745;
-            color: white;
-            margin-top: 10px;
+        button:hover {
+            background-color: #e60000;
         }
 
-        .download-btn.video {
-            background-color: #007bff;
-            color: white;
-            margin-top: 10px;
-        }
-
-        #loading-container {
+        #loading {
             display: none;
+            color: #333;
+            font-size: 18px;
             margin-top: 15px;
-            text-align: center;
-        }
-
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 5px solid rgba(255, 0, 0, 0.3);
-            border-top: 5px solid #ff0000;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
 
         #video-preview {
             display: none;
             margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             background-color: #f1f1f1;
+        }
+
+        #video-preview h3 {
+            font-size: 18px;
+            color: #333;
+        }
+
+        #download-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .download-btn {
+            padding: 12px 20px;
+            font-size: 16px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn.audio {
+            background-color: #4CAF50;
+        }
+
+        .download-btn.video {
+            background-color: #007bff;
+        }
+
+        .download-btn:hover {
+            opacity: 0.8;
         }
 
         .credit {
@@ -112,118 +113,103 @@
             color: #777;
             margin-top: 20px;
         }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <div class="logo">
-            <span class="material-icons">play_circle_filled</span> YouTube Downloader
+        <div class="search-bar">
+            <input type="text" id="query" placeholder="Search or paste YouTube URL">
+            <button onclick="fetchMedia()">Search</button>
         </div>
 
-        <div class="input-container">
-            <input type="text" id="query" placeholder="Paste YouTube link...">
-        </div>
-
-        <button class="search-btn" onclick="fetchMedia()">Search</button>
-
-        <div id="loading-container">
-            <div class="loading-spinner"></div>
-            <p id="loading-text">Loading... 0%</p>
-        </div>
+        <p id="loading">Loading...</p>
 
         <div id="video-preview">
             <h3 id="video-title"></h3>
-            <button class="download-btn audio" onclick="downloadMedia('audio')">Download MP3</button>
-            <button class="download-btn video" onclick="downloadMedia('video')">Download MP4</button>
+            <div id="download-buttons">
+                <button class="download-btn audio" onclick="downloadMedia('audio')">
+                    <span class="material-icons">headset</span> Download MP3
+                </button>
+                <button class="download-btn video" onclick="downloadMedia('video')">
+                    <span class="material-icons">videocam</span> Download MP4
+                </button>
+            </div>
         </div>
 
-        <p class="credit">Created by Vaishnav K</p>
+        <p class="credit">Created by Vaishnav K </p>
     </div>
 
     <script>
-        let audioUrl = "";
-        let videoUrl = "";
-
         async function fetchMedia() {
             const query = document.getElementById("query").value;
             if (!query) {
-                alert("Please enter a YouTube link.");
+                alert("Please enter a search term or YouTube URL");
                 return;
             }
 
-            document.getElementById("loading-container").style.display = "block";
+            document.getElementById("loading").style.display = "block";
             document.getElementById("video-preview").style.display = "none";
-            let percent = 0;
-            const loadingText = document.getElementById("loading-text");
-
-            const interval = setInterval(() => {
-                percent += 10;
-                loadingText.innerText = `Loading... ${percent}%`;
-                if (percent >= 100) clearInterval(interval);
-            }, 300);
 
             try {
-                // Fetch video data
-                const response = await fetch(`https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`);
+                const searchUrl = `https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`;
+                const response = await fetch(searchUrl);
                 const data = await response.json();
 
                 if (data.data) {
                     document.getElementById("video-title").innerText = data.data.title;
                     document.getElementById("video-preview").style.display = "block";
-                    
-                    // Store download URLs
-                    videoUrl = data.data.url;
-
-                    // Fetch audio data
-                    const audioResponse = await fetch(`https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}`);
-                    const audioData = await audioResponse.json();
-                    if (audioData.data) {
-                        audioUrl = audioData.data.url;
-                    }
                 } else {
-                    alert("Failed to fetch video details.");
+                    alert("Failed to fetch video details");
                 }
             } catch (error) {
-                alert("An error occurred while fetching data.");
+                console.error("Error:", error);
+                alert("An error occurred while fetching data");
             } finally {
-                clearInterval(interval);
-                document.getElementById("loading-container").style.display = "none";
+                document.getElementById("loading").style.display = "none";
             }
         }
 
         async function downloadMedia(type) {
-            let downloadUrl = type === "audio" ? audioUrl : videoUrl;
-            if (!downloadUrl) {
-                alert("Download link not found. Try searching again.");
+            const query = document.getElementById("query").value;
+            if (!query) {
+                alert("Please enter a search term or YouTube URL");
                 return;
             }
 
+            const audioApi = `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}`;
+            const videoApi = `https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`;
+
+            const apiUrl = type === "audio" ? audioApi : videoApi;
+
             try {
-                const response = await fetch(downloadUrl, {
-                    method: "GET",
-                });
+                const response = await fetch(apiUrl);
+                const data = await response.json();
 
-                if (!response.ok) {
-                    throw new Error("Failed to fetch file.");
+                if (data.data) {
+                    const downloadUrl = data.data.dl;
+                    const link = document.createElement("a");
+                    link.href = downloadUrl;
+                    link.download = type === "audio" ? "audio.mp3" : "video.mp4";
+                    link.click();
+                } else {
+                    alert("Failed to fetch download link");
                 }
-
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                
-                // Create an invisible download link
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = type === "audio" ? "audio.mp3" : "video.mp4";
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-
-                // Revoke object URL to free memory
-                window.URL.revokeObjectURL(url);
             } catch (error) {
-                alert("Error downloading file: " + error.message);
+                console.error("Error:", error);
+                alert("An error occurred while downloading");
             }
         }
     </script>
+
 </body>
 </html>
