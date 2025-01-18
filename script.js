@@ -1,7 +1,7 @@
-const API_URL = process.env.API_URL || "https://api.siputzx.my.id/api/d";
+const API_URL = process.env.API_URL || "https://api.siputzx.my.id/api/d"; // Fallback if .env not loaded
 
 async function fetchMedia() {
-    const query = document.getElementById("search").value;
+    const query = document.getElementById("query").value;
     if (!query) {
         alert("Please enter a search term or YouTube URL");
         return;
@@ -11,7 +11,8 @@ async function fetchMedia() {
     document.getElementById("video-preview").style.display = "none";
 
     try {
-        const response = await fetch(`${API_URL}/ytmp4?url=${encodeURIComponent(query)}`);
+        const searchUrl = `${API_URL}/ytmp4?url=${encodeURIComponent(query)}`;
+        const response = await fetch(searchUrl);
         const data = await response.json();
 
         if (data.data) {
@@ -29,31 +30,25 @@ async function fetchMedia() {
 }
 
 async function downloadMedia(type) {
-    const query = document.getElementById("search").value;
+    const query = document.getElementById("query").value;
     if (!query) {
         alert("Please enter a search term or YouTube URL");
         return;
     }
 
-    const format = type === "audio" ? "audio/mpeg" : "video/mp4";
-    const downloadUrl = `${API_URL}/ytmp4?url=${encodeURIComponent(query)}`;
+    const apiUrl = type === "audio" ? `${API_URL}/ytmp3?url=${encodeURIComponent(query)}` : `${API_URL}/ytmp4?url=${encodeURIComponent(query)}`;
 
     try {
-        const response = await fetch(downloadUrl);
+        const response = await fetch(apiUrl);
         const data = await response.json();
-        
+
         if (data.data) {
-            const link = document.createElement("a");
-            link.href = data.data.dl;
-            link.download = `download.${type === "audio" ? "mp3" : "mp4"}`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            window.open(data.data.dl, "_blank");
         } else {
-            alert("Failed to generate download link");
+            alert("Failed to fetch download link");
         }
     } catch (error) {
         console.error("Error:", error);
-        alert("Download failed");
+        alert("An error occurred while downloading");
     }
 }
