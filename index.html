@@ -196,7 +196,7 @@
     </div>
 
     <script>
-        const API_URL = "https://api.siputzx.my.id/api/d"; // Secure API
+        const API_URL = "https://api.siputzx.my.id/api/d";
 
         async function fetchMedia() {
             const query = document.getElementById("query").value;
@@ -240,7 +240,12 @@
                 const data = await response.json();
 
                 if (data.data) {
-                    window.open(data.data.dl, "_blank");
+                    const link = document.createElement("a");
+                    link.href = data.data.dl;
+                    link.download = `${data.data.title}.${type === "audio" ? "mp3" : "mp4"}`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
                 } else {
                     alert("Download link not found");
                 }
