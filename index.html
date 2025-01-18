@@ -254,6 +254,20 @@
             }
         }
 
+        function downloadMedia(type) {
+            const query = document.getElementById("query").value;
+            if (!query) {
+                alert("Please enter a valid YouTube link.");
+                return;
+            }
+
+            let url = type === "audio" 
+                ? `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}`
+                : `https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`;
+
+            window.open(url, "_blank");
+        }
+
         async function pasteFromClipboard(event) {
             event.preventDefault();
             const text = await navigator.clipboard.readText();
