@@ -8,6 +8,10 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
+        body, .container {
+            user-select: none; /* Prevent text selection */
+        }
+
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
@@ -69,6 +73,7 @@
             cursor: pointer;
             color: #555;
             font-size: 20px;
+            pointer-events: none; /* Disable interactions with paste icon */
         }
 
         .paste-icon:hover {
