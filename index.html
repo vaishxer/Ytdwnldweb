@@ -173,7 +173,7 @@
 
         <div class="input-container">
             <input type="text" id="query" placeholder="Paste YouTube link or search...">
-            <span class="material-icons paste-icon" id="paste-icon" onclick="pasteFromClipboard()">content_paste</span>
+            <span class="material-icons paste-icon" id="paste-icon" onclick="pasteFromClipboard(event)">content_paste</span>
         </div>
 
         <button class="search-btn" onclick="fetchMedia()">Search</button>
@@ -255,20 +255,12 @@
             }
         }
 
-        async function pasteFromClipboard() {
+        async function pasteFromClipboard(event) {
+            event.preventDefault(); // Prevent text selection on click
             const queryInput = document.getElementById("query");
             const text = await navigator.clipboard.readText();
             queryInput.value = text;
         }
-
-        // Enable or disable the paste icon based on text selection status
-        document.getElementById('query').addEventListener('select', function() {
-            document.getElementById('paste-icon').style.pointerEvents = 'none';  // Disable paste icon when text is selected
-        });
-
-        document.getElementById('query').addEventListener('focus', function() {
-            document.getElementById('paste-icon').style.pointerEvents = 'auto';  // Enable paste icon when input is focused
-        });
     </script>
 </body>
 </html>
