@@ -256,12 +256,6 @@
                 document.getElementById("loading-container").style.display = "none";
             }
         }
-
-        async function pasteFromClipboard(event) {
-            event.preventDefault();
-            const text = await navigator.clipboard.readText();
-            document.getElementById("query").value = text;
-        }
     </script>
 </body>
 </html>
