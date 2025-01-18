@@ -27,7 +27,6 @@
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
             text-align: center;
-            animation: fadeIn 0.5s ease-in-out;
         }
 
         .logo {
@@ -38,11 +37,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .logo span {
-            font-size: 28px;
-            margin-right: 8px;
         }
 
         .input-container {
@@ -57,40 +51,34 @@
             font-size: 16px;
             border: 2px solid #ddd;
             border-radius: 30px;
-            transition: all 0.3s ease;
-            padding-right: 45px;
         }
 
-        .paste-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #555;
-            font-size: 20px;
-        }
-
-        .paste-icon:hover {
-            color: #222;
-        }
-
-        .search-btn {
+        .search-btn, .download-btn {
             width: 100%;
             padding: 14px;
             font-size: 16px;
-            background-color: #ff0000;
-            color: white;
             border: none;
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 8px;
             font-weight: bold;
         }
 
-        .search-btn:hover {
-            background-color: #e60000;
+        .search-btn {
+            background-color: #ff0000;
+            color: white;
+        }
+
+        .download-btn.audio {
+            background-color: #28a745;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .download-btn.video {
+            background-color: #007bff;
+            color: white;
+            margin-top: 10px;
         }
 
         #loading-container {
@@ -109,10 +97,9 @@
             margin: auto;
         }
 
-        #loading-text {
-            font-size: 16px;
-            color: #555;
-            margin-top: 8px;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         #video-preview {
@@ -121,66 +108,12 @@
             padding: 15px;
             border-radius: 10px;
             background-color: #f1f1f1;
-            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        #video-preview h3 {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        #download-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-        }
-
-        .download-btn {
-            padding: 12px 20px;
-            font-size: 16px;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            width: 48%;
-        }
-
-        .download-btn.audio {
-            background-color: #28a745;
-        }
-
-        .download-btn.video {
-            background-color: #007bff;
-        }
-
-        .download-btn:hover {
-            opacity: 0.8;
         }
 
         .credit {
             font-size: 14px;
             color: #777;
             margin-top: 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
     </style>
 </head>
@@ -191,8 +124,7 @@
         </div>
 
         <div class="input-container">
-            <input type="text" id="query" placeholder="Paste YouTube link or search...">
-            <span class="material-icons paste-icon" onclick="pasteFromClipboard(event)">content_paste</span>
+            <input type="text" id="query" placeholder="Paste YouTube link...">
         </div>
 
         <button class="search-btn" onclick="fetchMedia()">Search</button>
@@ -204,14 +136,8 @@
 
         <div id="video-preview">
             <h3 id="video-title"></h3>
-            <div id="download-buttons">
-                <button class="download-btn audio" onclick="downloadMedia('audio')">
-                    <span class="material-icons">headset</span> MP3
-                </button>
-                <button class="download-btn video" onclick="downloadMedia('video')">
-                    <span class="material-icons">videocam</span> MP4
-                </button>
-            </div>
+            <button class="download-btn audio" onclick="downloadMedia('audio')">Download MP3</button>
+            <button class="download-btn video" onclick="downloadMedia('video')">Download MP4</button>
         </div>
 
         <p class="credit">Created by Vaishnav K</p>
@@ -221,15 +147,15 @@
         async function fetchMedia() {
             const query = document.getElementById("query").value;
             if (!query) {
-                alert("Please enter a YouTube link or search query");
+                alert("Please enter a YouTube link.");
                 return;
             }
 
             document.getElementById("loading-container").style.display = "block";
             document.getElementById("video-preview").style.display = "none";
-
             let percent = 0;
             const loadingText = document.getElementById("loading-text");
+
             const interval = setInterval(() => {
                 percent += 10;
                 loadingText.innerText = `Loading... ${percent}%`;
@@ -244,34 +170,48 @@
                     document.getElementById("video-title").innerText = data.data.title;
                     document.getElementById("video-preview").style.display = "block";
                 } else {
-                    alert("Failed to fetch video details");
+                    alert("Failed to fetch video details.");
                 }
             } catch (error) {
-                alert("An error occurred while fetching data");
+                alert("An error occurred while fetching data.");
             } finally {
                 clearInterval(interval);
                 document.getElementById("loading-container").style.display = "none";
             }
         }
 
-        function downloadMedia(type) {
+        async function downloadMedia(type) {
             const query = document.getElementById("query").value;
             if (!query) {
                 alert("Please enter a valid YouTube link.");
                 return;
             }
 
-            let url = type === "audio" 
+            let apiUrl = type === "audio"
                 ? `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}`
                 : `https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`;
 
-            window.open(url, "_blank");
-        }
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
 
-        async function pasteFromClipboard(event) {
-            event.preventDefault();
-            const text = await navigator.clipboard.readText();
-            document.getElementById("query").value = text;
+                if (data.data && data.data.url) {
+                    const downloadUrl = data.data.url;
+                    const fileName = `${data.data.title}.${type === "audio" ? "mp3" : "mp4"}`;
+
+                    // Create an invisible download link
+                    const a = document.createElement("a");
+                    a.href = downloadUrl;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                } else {
+                    alert("Download link not found.");
+                }
+            } catch (error) {
+                alert("Failed to download media.");
+            }
         }
     </script>
 </body>
