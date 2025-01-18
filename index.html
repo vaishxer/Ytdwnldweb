@@ -5,7 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Downloader</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css">
+    <style>
+        /* Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #e60000;
+        }
+
+        #loading {
+            display: none;
+            font-size: 18px;
+            color: #555;
+            margin-top: 15px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        #video-preview {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f1f1f1;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        #video-preview h3 {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #download-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .download-btn {
+            padding: 12px 20px;
+            font-size: 16px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn.audio {
+            background-color: #4CAF50;
+        }
+
+        .download-btn.video {
+            background-color: #007bff;
+        }
+
+        .download-btn:hover {
+            opacity: 0.8;
+        }
+
+        .credit {
+            font-size: 14px;
+            color: #777;
+            margin-top: 20px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -31,6 +157,60 @@
         <p class="credit">Created by Vaishnav K</p>
     </div>
 
-    <script src="assets/script.js"></script>
+    <script>
+        const API_URL = "https://api.siputzx.my.id/api/d"; // Secure API
+
+        async function fetchMedia() {
+            const query = document.getElementById("query").value;
+            if (!query) {
+                alert("Please enter a search term or YouTube URL");
+                return;
+            }
+
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("video-preview").style.display = "none";
+
+            try {
+                const response = await fetch(`${API_URL}/ytmp4?url=${encodeURIComponent(query)}`);
+                const data = await response.json();
+
+                if (data.data) {
+                    document.getElementById("video-title").innerText = data.data.title;
+                    document.getElementById("video-preview").style.display = "block";
+                } else {
+                    alert("Failed to fetch video details");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while fetching data");
+            } finally {
+                document.getElementById("loading").style.display = "none";
+            }
+        }
+
+        async function downloadMedia(type) {
+            const query = document.getElementById("query").value;
+            if (!query) {
+                alert("Please enter a search term or YouTube URL");
+                return;
+            }
+
+            const apiUrl = type === "audio" ? `${API_URL}/ytmp3?url=${encodeURIComponent(query)}` : `${API_URL}/ytmp4?url=${encodeURIComponent(query)}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.data) {
+                    window.open(data.data.dl, "_blank");
+                } else {
+                    alert("Failed to fetch download link");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while downloading");
+            }
+        }
+    </script>
 </body>
 </html>
