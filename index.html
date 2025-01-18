@@ -1,7 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Downloader</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="assets/styles.css">  <!-- Correct CSS link -->
+    <link rel="stylesheet" href="assets/styles.css">
 </head>
+<body>
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="query" placeholder="Search or paste YouTube URL">
+            <button onclick="fetchMedia()">Search</button>
+        </div>
+
+        <p id="loading">Loading...</p>
+
+        <div id="video-preview">
+            <h3 id="video-title"></h3>
+            <div id="download-buttons">
+                <button class="download-btn audio" onclick="downloadMedia('audio')">
+                    <span class="material-icons">headset</span> Download MP3
+                </button>
+                <button class="download-btn video" onclick="downloadMedia('video')">
+                    <span class="material-icons">videocam</span> Download MP4
+                </button>
+            </div>
+        </div>
+
+        <p class="credit">Created by Vaishnav K</p>
+    </div>
+
+    <script src="assets/script.js"></script>
+</body>
+</html>
