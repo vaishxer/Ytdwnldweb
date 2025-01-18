@@ -144,6 +144,9 @@
     </div>
 
     <script>
+        let audioUrl = "";
+        let videoUrl = "";
+
         async function fetchMedia() {
             const query = document.getElementById("query").value;
             if (!query) {
@@ -169,6 +172,16 @@
                 if (data.data) {
                     document.getElementById("video-title").innerText = data.data.title;
                     document.getElementById("video-preview").style.display = "block";
+                    
+                    // Store download URLs
+                    videoUrl = data.data.url;
+                    
+                    // Fetch audio separately
+                    const audioResponse = await fetch(`https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}`);
+                    const audioData = await audioResponse.json();
+                    if (audioData.data) {
+                        audioUrl = audioData.data.url;
+                    }
                 } else {
                     alert("Failed to fetch video details.");
                 }
@@ -180,38 +193,20 @@
             }
         }
 
-        async function downloadMedia(type) {
-            const query = document.getElementById("query").value;
-            if (!query) {
-                alert("Please enter a valid YouTube link.");
+        function downloadMedia(type) {
+            let downloadUrl = type === "audio" ? audioUrl : videoUrl;
+            if (!downloadUrl) {
+                alert("Download link not found. Try searching again.");
                 return;
             }
 
-            let apiUrl = type === "audio"
-                ? `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}`
-                : `https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`;
-
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                if (data.data && data.data.url) {
-                    const downloadUrl = data.data.url;
-                    const fileName = `${data.data.title}.${type === "audio" ? "mp3" : "mp4"}`;
-
-                    // Create an invisible download link
-                    const a = document.createElement("a");
-                    a.href = downloadUrl;
-                    a.download = fileName;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                } else {
-                    alert("Download link not found.");
-                }
-            } catch (error) {
-                alert("Failed to download media.");
-            }
+            // Create an invisible download link
+            const a = document.createElement("a");
+            a.href = downloadUrl;
+            a.download = type === "audio" ? "audio.mp3" : "video.mp4";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
     </script>
 </body>
