@@ -21,7 +21,7 @@
 
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 500px;
             background-color: #ffffff;
             padding: 20px;
             border-radius: 10px;
@@ -30,16 +30,10 @@
             animation: fadeIn 0.5s ease-in-out;
         }
 
-        .search-bar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
         .input-container {
             position: relative;
-            width: 80%;
+            width: 100%;
+            margin-bottom: 15px;
         }
 
         input[type="text"] {
@@ -65,8 +59,9 @@
             color: #333;
         }
 
-        button {
-            padding: 12px 20px;
+        .search-btn {
+            width: 100%;
+            padding: 12px;
             font-size: 16px;
             background-color: #ff0000;
             color: white;
@@ -74,10 +69,10 @@
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-left: 10px;
+            margin-top: 5px;
         }
 
-        button:hover {
+        .search-btn:hover {
             background-color: #e60000;
         }
 
@@ -153,13 +148,11 @@
 </head>
 <body>
     <div class="container">
-        <div class="search-bar">
-            <div class="input-container">
-                <input type="text" id="query" placeholder="Search or paste YouTube URL">
-                <span class="material-icons paste-icon" onclick="pasteFromClipboard()">content_paste</span>
-            </div>
-            <button onclick="fetchMedia()">Search</button>
+        <div class="input-container">
+            <input type="text" id="query" placeholder="Search or paste YouTube URL">
+            <span class="material-icons paste-icon" onclick="pasteFromClipboard()">content_paste</span>
         </div>
+        <button class="search-btn" onclick="fetchMedia()">Search</button>
 
         <p id="loading">Loading...</p>
 
