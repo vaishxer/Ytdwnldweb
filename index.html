@@ -78,28 +78,29 @@
             background-color: darkred;
         }
 
-        #loading {
-            display: none;
-            margin-top: 10px;
-            font-size: 16px;
-            color: red;
-            font-weight: bold;
-        }
-
         .loader {
             display: none;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid red;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 10px auto;
+            width: 100%;
+            height: 8px;
+            background: #ddd;
+            margin-top: 10px;
+            border-radius: 5px;
+            overflow: hidden;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .loading-bar {
+            width: 0;
+            height: 100%;
+            background: red;
+            transition: width 0.3s;
+        }
+
+        #loading-text {
+            display: none;
+            margin-top: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            color: red;
         }
 
         #video-preview {
@@ -167,9 +168,6 @@
             </button>
         </div>
 
-        <div class="loader"></div>
-        <p id="loading">Loading... <span id="progress">0%</span></p>
-
         <div id="video-preview">
             <h3 id="video-title"></h3>
             <div class="download-buttons">
@@ -181,6 +179,11 @@
                 </button>
             </div>
         </div>
+
+        <div class="loader" id="download-loader">
+            <div class="loading-bar" id="loading-bar"></div>
+        </div>
+        <p id="loading-text">Preparing download... <span id="loading-percent">0%</span></p>
 
         <p class="credit">Created by Vaishnav K 🤫😜</p>
     </div>
@@ -207,19 +210,6 @@
                 return;
             }
 
-            document.getElementById("loading").style.display = "block";
-            document.querySelector(".loader").style.display = "block";
-
-            let progress = 0;
-            const interval = setInterval(() => {
-                if (progress < 100) {
-                    progress += 10;
-                    document.getElementById("progress").innerText = progress + "%";
-                } else {
-                    clearInterval(interval);
-                }
-            }, 300);
-
             try {
                 const response = await fetch(`https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`);
                 const data = await response.json();
@@ -230,11 +220,8 @@
                 } else {
                     alert("Failed to fetch video details");
                 }
-            } catch (error) {
+            } catch {
                 alert("An error occurred while fetching data");
-            } finally {
-                document.getElementById("loading").style.display = "none";
-                document.querySelector(".loader").style.display = "none";
             }
         }
 
@@ -244,17 +231,37 @@
                 ? `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}`
                 : `https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`;
 
+            document.getElementById("download-loader").style.display = "block";
+            document.getElementById("loading-text").style.display = "block";
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                if (progress < 100) {
+                    progress += 10;
+                    document.getElementById("loading-bar").style.width = progress + "%";
+                    document.getElementById("loading-percent").innerText = progress + "%";
+                } else {
+                    clearInterval(interval);
+                }
+            }, 300);
+
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
                 if (data.data) {
+                    clearInterval(interval);
                     window.open(data.data.dl, "_blank");
                 } else {
                     alert("Failed to fetch download link");
                 }
             } catch {
                 alert("An error occurred while downloading");
+            } finally {
+                setTimeout(() => {
+                    document.getElementById("download-loader").style.display = "none";
+                    document.getElementById("loading-text").style.display = "none";
+                }, 2000);
             }
         }
     </script>
