@@ -12,7 +12,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             margin: 0;
         }
 
@@ -37,34 +37,19 @@
 
         .search-bar {
             display: flex;
+            flex-direction: column;
             align-items: center;
             margin-bottom: 20px;
             position: relative;
         }
 
         input[type="text"] {
-            width: 80%;
+            width: 90%;
             padding: 12px;
             font-size: 16px;
             border: 2px solid #ddd;
             border-radius: 5px;
             transition: all 0.3s ease;
-        }
-
-        .paste-btn {
-            margin-left: 10px;
-            padding: 12px 20px;
-            font-size: 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .paste-btn:hover {
-            background-color: #45a049;
         }
 
         .error-message {
@@ -184,14 +169,11 @@
         </h2>
         <div class="search-bar">
             <input type="text" id="query" placeholder="Paste YouTube URL" oninput="validateURL()">
-            <button class="paste-btn" onclick="pasteURL()">Paste URL</button>
+            <p class="error-message" id="error-message">Please enter a valid YouTube URL</p>
+            <button onclick="fetchMedia()">
+                <span class="material-icons">search</span> Search
+            </button>
         </div>
-
-        <p class="error-message" id="error-message">Please enter a valid YouTube URL</p>
-
-        <button onclick="fetchMedia()">
-            <span class="material-icons">search</span> Search
-        </button>
 
         <div class="loader" id="search-loader">
             <div class="loading-bar" id="search-loading-bar"></div>
@@ -232,15 +214,6 @@
                 errorMessage.style.display = "none";
                 inputField.style.borderColor = "#ddd";
             }
-        }
-
-        function pasteURL() {
-            navigator.clipboard.readText().then(text => {
-                document.getElementById("query").value = text;
-                validateURL();
-            }).catch(err => {
-                alert('Failed to paste URL: ' + err);
-            });
         }
 
         async function fetchMedia() {
