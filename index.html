@@ -205,10 +205,10 @@
         <div id="video-preview">
             <h3 id="video-title"></h3>
             <div id="download-buttons">
-                <button class="download-btn audio" onclick="downloadMedia('audio')">
+                <button class="download-btn audio" id="audio-btn" onclick="downloadMedia('audio')">
                     <span class="material-icons">headset</span> MP3
                 </button>
-                <button class="download-btn video" onclick="downloadMedia('video')">
+                <button class="download-btn video" id="video-btn" onclick="downloadMedia('video')">
                     <span class="material-icons">videocam</span> MP4
                 </button>
             </div>
@@ -218,7 +218,7 @@
     </div>
 
     <script>
-        let downloadLinks = {};
+        let downloadLinks = { audio: null, video: null };
 
         async function fetchMedia() {
             const query = document.getElementById("query").value;
@@ -241,6 +241,10 @@
                     // Store the download links
                     downloadLinks.audio = data.data.audio_url;
                     downloadLinks.video = data.data.video_url;
+
+                    // Enable buttons only if URLs are valid
+                    document.getElementById("audio-btn").disabled = !downloadLinks.audio;
+                    document.getElementById("video-btn").disabled = !downloadLinks.video;
                 } else {
                     alert("Failed to fetch video details");
                 }
@@ -253,11 +257,10 @@
 
         function downloadMedia(type) {
             if (!downloadLinks[type]) {
-                alert("Please search for a video first!");
+                alert("Download link not found, please try again!");
                 return;
             }
 
-            // Create an anchor element to trigger download
             const a = document.createElement("a");
             a.href = downloadLinks[type];
             a.download = `YouTube_${type}.${type === "audio" ? "mp3" : "mp4"}`;
