@@ -10,7 +10,7 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
+            background-color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -20,11 +20,12 @@
         .container {
             width: 100%;
             max-width: 600px;
-            background-color: #ffffff;
+            background-color: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
+            border-top: 4px solid red;
         }
 
         .search-bar {
@@ -47,7 +48,7 @@
         button {
             padding: 12px 20px;
             font-size: 16px;
-            background-color: #ff0000;
+            background-color: red;
             color: white;
             border: none;
             border-radius: 5px;
@@ -56,14 +57,50 @@
         }
 
         button:hover {
-            background-color: #e60000;
+            background-color: darkred;
         }
 
-        #loading {
+        .loading-container {
             display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: red;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 5px;
+            font-size: 14px;
             color: #333;
-            font-size: 18px;
-            margin-top: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background: #ddd;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress {
+            width: 0%;
+            height: 100%;
+            background: red;
+            transition: width 0.3s ease;
         }
 
         #video-preview {
@@ -72,7 +109,7 @@
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            background-color: #f1f1f1;
+            background-color: #f9f9f9;
         }
 
         #video-preview h3 {
@@ -118,12 +155,16 @@
 <body>
 
     <div class="container">
+        <h2 style="color: red;">YouTube Downloader</h2>
         <div class="search-bar">
             <input type="text" id="query" placeholder="Search or paste YouTube URL">
             <button onclick="fetchMedia()">Search</button>
         </div>
 
-        <p id="loading">Loading...</p>
+        <div class="loading-container" id="loading">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Fetching details...</p>
+        </div>
 
         <div id="video-preview">
             <h3 id="video-title"></h3>
@@ -134,6 +175,9 @@
                 <button class="download-btn video" onclick="downloadMedia('video')">
                     <span class="material-icons">videocam</span> Download MP4
                 </button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" id="progress-bar"></div>
             </div>
         </div>
 
@@ -150,7 +194,7 @@
                 return;
             }
 
-            document.getElementById("loading").style.display = "block";
+            document.getElementById("loading").style.display = "flex";
             document.getElementById("video-preview").style.display = "none";
 
             try {
@@ -181,12 +225,25 @@
                 return;
             }
 
+            const progressBar = document.getElementById("progress-bar");
+            progressBar.style.width = "0%";
+
             try {
                 const response = await fetch(downloadLinks[type]);
                 const data = await response.json();
 
                 if (data.data && data.data.dl) {
-                    window.open(data.data.dl, "_blank");
+                    let percent = 0;
+                    const interval = setInterval(() => {
+                        if (percent < 100) {
+                            percent += 10;
+                            progressBar.style.width = percent + "%";
+                        } else {
+                            clearInterval(interval);
+                        }
+                    }, 200);
+
+                    setTimeout(() => window.open(data.data.dl, "_blank"), 2000);
                 } else {
                     alert("Failed to get download link!");
                 }
