@@ -218,6 +218,8 @@
     </div>
 
     <script>
+        let downloadLinks = {};
+
         async function fetchMedia() {
             const query = document.getElementById("query").value;
             if (!query) {
@@ -228,14 +230,6 @@
             document.getElementById("loading-container").style.display = "block";
             document.getElementById("video-preview").style.display = "none";
 
-            let percent = 0;
-            const loadingText = document.getElementById("loading-text");
-            const interval = setInterval(() => {
-                percent += 10;
-                loadingText.innerText = `Loading... ${percent}%`;
-                if (percent >= 100) clearInterval(interval);
-            }, 300);
-
             try {
                 const response = await fetch(`https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`);
                 const data = await response.json();
@@ -243,29 +237,33 @@
                 if (data.data) {
                     document.getElementById("video-title").innerText = data.data.title;
                     document.getElementById("video-preview").style.display = "block";
+
+                    // Store the download links
+                    downloadLinks.audio = data.data.audio_url;
+                    downloadLinks.video = data.data.video_url;
                 } else {
                     alert("Failed to fetch video details");
                 }
             } catch (error) {
                 alert("An error occurred while fetching data");
             } finally {
-                clearInterval(interval);
                 document.getElementById("loading-container").style.display = "none";
             }
         }
 
-        async function downloadMedia(type) {
-            const query = document.getElementById("query").value;
-            if (!query) {
-                alert("Please enter a YouTube link first.");
+        function downloadMedia(type) {
+            if (!downloadLinks[type]) {
+                alert("Please search for a video first!");
                 return;
             }
 
-            const apiUrl = type === "audio"
-                ? `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}`
-                : `https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`;
-
-            window.open(apiUrl, "_blank");
+            // Create an anchor element to trigger download
+            const a = document.createElement("a");
+            a.href = downloadLinks[type];
+            a.download = `YouTube_${type}.${type === "audio" ? "mp3" : "mp4"}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         async function pasteFromClipboard(event) {
