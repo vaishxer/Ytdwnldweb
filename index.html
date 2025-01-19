@@ -8,85 +8,63 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
+            background-color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            flex-direction: column;
-            overflow: hidden;
+            margin: 0;
         }
 
         .container {
-            background-color: #ffffff;
+            max-width: 600px;
             width: 100%;
-            max-width: 500px;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
-            transform: translateY(-50%);
+            border-top: 4px solid red;
         }
 
         h2 {
-            font-size: 28px;
-            color: #FF3B30;
-            font-weight: 700;
-            margin-bottom: 30px;
-            animation: fadeIn 1s ease-in-out;
+            color: red;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .search-bar {
-            position: relative;
+            display: flex;
+            align-items: center;
             margin-bottom: 20px;
+            position: relative;
         }
 
         input[type="text"] {
-            width: 100%;
-            padding: 15px;
-            font-size: 16px;
-            border-radius: 30px;
-            border: 2px solid #ddd;
-            outline: none;
-            box-sizing: border-box;
-            transition: all 0.4s ease;
-            background-color: #f9f9f9;
-        }
-
-        input[type="text"]:focus {
-            border-color: #FF3B30;
-            background-color: #fff;
-            box-shadow: 0 0 8px rgba(255, 59, 48, 0.4);
-        }
-
-        input[type="text"]:hover {
-            border-color: #FF3B30;
-        }
-
-        .paste-btn {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            background-color: #FF3B30;
-            color: white;
-            border: none;
+            width: 80%;
             padding: 12px;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
             transition: all 0.3s ease;
         }
 
-        .paste-btn .material-icons {
-            font-size: 20px;
+        .paste-btn {
+            margin-left: 10px;
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .paste-btn:hover {
-            background-color: #FF2A19;
-            transform: translateY(-50%) scale(1.1);
+            background-color: #45a049;
         }
 
         .error-message {
@@ -97,21 +75,22 @@
         }
 
         button {
-            margin-top: 20px;
+            margin-top: 10px;
             padding: 12px 20px;
             font-size: 16px;
-            background-color: #FF3B30;
+            background-color: red;
             color: white;
             border: none;
-            border-radius: 50px;
+            border-radius: 5px;
             cursor: pointer;
-            width: 100%;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         button:hover {
-            background-color: #FF2A19;
-            transform: scale(1.05);
+            background-color: darkred;
         }
 
         .loader {
@@ -127,7 +106,7 @@
         .loading-bar {
             width: 0;
             height: 100%;
-            background: #FF3B30;
+            background: red;
             transition: width 0.3s;
         }
 
@@ -136,7 +115,7 @@
             margin-top: 5px;
             font-size: 14px;
             font-weight: bold;
-            color: #FF3B30;
+            color: red;
         }
 
         #video-preview {
@@ -168,11 +147,11 @@
         }
 
         .download-btn {
-            padding: 10px 15px;
-            font-size: 14px;
+            padding: 12px 20px;
+            font-size: 16px;
             color: white;
             border: none;
-            border-radius: 50px;
+            border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -189,37 +168,23 @@
             opacity: 0.8;
         }
 
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 500px) {
-            .download-buttons {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            button {
-                width: 100%;
-            }
+        .credit {
+            font-size: 14px;
+            color: #777;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2>YouTube Downloader</h2>
-        
+        <h2>
+            <span class="material-icons">play_circle_filled</span>
+            YouTube Downloader
+        </h2>
         <div class="search-bar">
             <input type="text" id="query" placeholder="Paste YouTube URL" oninput="validateURL()">
-            <button class="paste-btn" onclick="pasteURL()">
-                <span class="material-icons">content_paste</span>
-            </button>
+            <button class="paste-btn" onclick="pasteURL()">Paste URL</button>
         </div>
 
         <p class="error-message" id="error-message">Please enter a valid YouTube URL</p>
@@ -238,10 +203,10 @@
             <img id="video-image" src="" alt="Video thumbnail">
             <div class="download-buttons">
                 <button class="download-btn audio" onclick="downloadMedia('audio')">
-                    <span class="material-icons">headset</span> MP3
+                    <span class="material-icons">headset</span> Download MP3
                 </button>
                 <button class="download-btn video" onclick="downloadMedia('video')">
-                    <span class="material-icons">videocam</span> MP4
+                    <span class="material-icons">videocam</span> Download MP4
                 </button>
             </div>
         </div>
@@ -250,6 +215,8 @@
             <div class="loading-bar" id="download-loading-bar"></div>
         </div>
         <p id="download-loading-text" style="display:none;">Preparing download... <span id="download-loading-percent">0%</span></p>
+
+        <p class="credit">Created by Vaishnav K 🤫😜</p>
     </div>
 
     <script>
@@ -304,13 +271,12 @@
 
                 if (data.data) {
                     document.getElementById("video-title").innerText = data.data.title;
-                    document.getElementById("video-image").src = data.data.thumbnail;
+                    document.getElementById("video-image").src = "https://files.catbox.moe/jfydvw.png";  // Add the image URL here
                     document.getElementById("video-preview").style.display = "block";
                 } else {
                     alert("Failed to fetch video details");
                 }
-            } catch (error) {
-                console.error("Error:", error);
+            } catch {
                 alert("An error occurred while fetching data");
             } finally {
                 clearInterval(searchInterval);
@@ -323,14 +289,11 @@
 
         async function downloadMedia(type) {
             const query = document.getElementById("query").value.trim();
-            if (!query.match(/^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/)) {
-                alert("Please enter a valid YouTube URL");
-                return;
-            }
+            const apiUrl = type === "audio"
+                ? `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}`
+                : `https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`;
 
-            const apiUrl = type === "audio" ? `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}` : `https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`;
-
-            // Show download loading bar
+            // Show the download loading bar
             document.getElementById("download-loader").style.display = "block";
             document.getElementById("download-loading-text").style.display = "block";
 
@@ -350,20 +313,21 @@
                 const data = await response.json();
 
                 if (data.data) {
-                    window.location.href = data.data.dl;  // Redirect to download link
+                    clearInterval(downloadInterval);
+                    window.open(data.data.dl, "_blank");
                 } else {
-                    alert("Failed to prepare download");
+                    alert("Failed to fetch download link");
                 }
             } catch {
-                alert("An error occurred while preparing download");
+                alert("An error occurred while downloading");
             } finally {
-                clearInterval(downloadInterval);
                 setTimeout(() => {
                     document.getElementById("download-loader").style.display = "none";
                     document.getElementById("download-loading-text").style.display = "none";
-                }, 1000);
+                }, 2000);
             }
         }
     </script>
+
 </body>
 </html>
