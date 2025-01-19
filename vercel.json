@@ -2,11 +2,15 @@
   "version": 2,
   "builds": [
     {
-      "src": "public/index.html",
+      "src": "index.html",
       "use": "@vercel/static"
     },
     {
-      "src": "api/*.js",
+      "src": "ytmp3.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "ytmp4.js",
       "use": "@vercel/node"
     }
   ]
