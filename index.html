@@ -69,7 +69,6 @@
             cursor: pointer;
             color: #555;
             font-size: 20px;
-            user-select: none;
         }
 
         .paste-icon:hover {
@@ -231,11 +230,10 @@
 
             let percent = 0;
             const loadingText = document.getElementById("loading-text");
-
             const interval = setInterval(() => {
-                percent += Math.floor(Math.random() * 10) + 5;
-                if (percent > 95) percent = 95;
+                percent += 10;
                 loadingText.innerText = `Loading... ${percent}%`;
+                if (percent >= 100) clearInterval(interval);
             }, 300);
 
             try {
@@ -243,7 +241,6 @@
                 const data = await response.json();
 
                 if (data.data) {
-                    loadingText.innerText = `Loading... 100%`;
                     document.getElementById("video-title").innerText = data.data.title;
                     document.getElementById("video-preview").style.display = "block";
                 } else {
@@ -255,6 +252,20 @@
                 clearInterval(interval);
                 document.getElementById("loading-container").style.display = "none";
             }
+        }
+
+        async function downloadMedia(type) {
+            const query = document.getElementById("query").value;
+            if (!query) {
+                alert("Please enter a YouTube link first.");
+                return;
+            }
+
+            const apiUrl = type === "audio"
+                ? `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}`
+                : `https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`;
+
+            window.open(apiUrl, "_blank");
         }
 
         async function pasteFromClipboard(event) {
