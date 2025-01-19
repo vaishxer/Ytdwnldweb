@@ -10,13 +10,12 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #ffffff;
+            background-color: #fafafa;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             flex-direction: column;
-            background-color: #fafafa;
         }
 
         .container {
@@ -49,7 +48,7 @@
         }
 
         input[type="text"] {
-            width: 70%;
+            width: 75%;
             padding: 12px;
             font-size: 16px;
             border: 2px solid #ddd;
@@ -58,23 +57,17 @@
         }
 
         .paste-btn {
-            margin-left: 10px;
-            padding: 12px 18px;
-            font-size: 16px;
             background-color: #FF0000;
             color: white;
             border: none;
-            border-radius: 5px;
+            padding: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .paste-btn:hover {
-            background-color: #e60000;
+            border-radius: 50%;
+            margin-left: 10px;
         }
 
         .paste-btn .material-icons {
-            font-size: 18px;
+            font-size: 20px;
         }
 
         .error-message {
@@ -86,8 +79,8 @@
 
         button {
             margin-top: 20px;
-            padding: 12px 20px;
-            font-size: 16px;
+            padding: 10px 15px;
+            font-size: 14px;
             background-color: #FF0000;
             color: white;
             border: none;
@@ -156,8 +149,8 @@
         }
 
         .download-btn {
-            padding: 12px 20px;
-            font-size: 16px;
+            padding: 8px 12px;
+            font-size: 14px;
             color: white;
             border: none;
             border-radius: 5px;
@@ -219,7 +212,7 @@
         <div class="search-bar">
             <input type="text" id="query" placeholder="Paste YouTube URL" oninput="validateURL()">
             <button class="paste-btn" onclick="pasteURL()">
-                <span class="material-icons">content_paste</span> Paste URL
+                <span class="material-icons">content_paste</span>
             </button>
         </div>
 
@@ -239,10 +232,10 @@
             <img id="video-image" src="" alt="Video thumbnail">
             <div class="download-buttons">
                 <button class="download-btn audio" onclick="downloadMedia('audio')">
-                    <span class="material-icons">headset</span> Download MP3
+                    <span class="material-icons">headset</span> MP3
                 </button>
                 <button class="download-btn video" onclick="downloadMedia('video')">
-                    <span class="material-icons">videocam</span> Download MP4
+                    <span class="material-icons">videocam</span> MP4
                 </button>
             </div>
         </div>
