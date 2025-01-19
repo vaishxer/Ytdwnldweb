@@ -6,8 +6,6 @@
     <title>YouTube Downloader</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
@@ -21,113 +19,64 @@
 
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
             background-color: #ffffff;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
-            animation: fadeIn 0.5s ease-in-out;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ff0000;
-            margin-bottom: 10px;
+        .search-bar {
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .logo span {
-            font-size: 28px;
-            margin-right: 8px;
-        }
-
-        .input-container {
-            position: relative;
-            width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         input[type="text"] {
-            width: 100%;
-            padding: 14px 15px;
+            width: 80%;
+            padding: 12px;
             font-size: 16px;
             border: 2px solid #ddd;
-            border-radius: 30px;
+            border-radius: 5px;
+            margin-right: 10px;
             transition: all 0.3s ease;
-            padding-right: 45px;
         }
 
-        .paste-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #555;
-            font-size: 20px;
-        }
-
-        .paste-icon:hover {
-            color: #222;
-        }
-
-        .search-btn {
-            width: 100%;
-            padding: 14px;
+        button {
+            padding: 12px 20px;
             font-size: 16px;
             background-color: #ff0000;
             color: white;
             border: none;
-            border-radius: 30px;
+            border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 8px;
-            font-weight: bold;
         }
 
-        .search-btn:hover {
+        button:hover {
             background-color: #e60000;
         }
 
-        #loading-container {
+        #loading {
             display: none;
+            color: #333;
+            font-size: 18px;
             margin-top: 15px;
-            text-align: center;
-        }
-
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 5px solid rgba(255, 0, 0, 0.3);
-            border-top: 5px solid #ff0000;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: auto;
-        }
-
-        #loading-text {
-            font-size: 16px;
-            color: #555;
-            margin-top: 8px;
         }
 
         #video-preview {
             display: none;
             margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             background-color: #f1f1f1;
-            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 0.3s ease-in-out;
         }
 
         #video-preview h3 {
             font-size: 18px;
-            font-weight: bold;
             color: #333;
         }
 
@@ -142,15 +91,13 @@
             font-size: 16px;
             color: white;
             border: none;
-            border-radius: 30px;
+            border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-weight: bold;
-            width: 48%;
         }
 
         .download-btn.audio {
-            background-color: #28a745;
+            background-color: #4CAF50;
         }
 
         .download-btn.video {
@@ -166,55 +113,31 @@
             color: #777;
             margin-top: 20px;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <div class="logo">
-            <span class="material-icons">play_circle_filled</span> YouTube Downloader
+        <div class="search-bar">
+            <input type="text" id="query" placeholder="Search or paste YouTube URL">
+            <button onclick="fetchMedia()">Search</button>
         </div>
 
-        <div class="input-container">
-            <input type="text" id="query" placeholder="Paste YouTube link or search...">
-            <span class="material-icons paste-icon" onclick="pasteFromClipboard(event)">content_paste</span>
-        </div>
-
-        <button class="search-btn" onclick="fetchMedia()">Search</button>
-
-        <div id="loading-container">
-            <div class="loading-spinner"></div>
-            <p id="loading-text">Loading... 0%</p>
-        </div>
+        <p id="loading">Loading...</p>
 
         <div id="video-preview">
             <h3 id="video-title"></h3>
             <div id="download-buttons">
-                <button class="download-btn audio" id="audio-btn" onclick="downloadMedia('audio')">
-                    <span class="material-icons">headset</span> MP3
+                <button class="download-btn audio" onclick="downloadMedia('audio')">
+                    <span class="material-icons">headset</span> Download MP3
                 </button>
-                <button class="download-btn video" id="video-btn" onclick="downloadMedia('video')">
-                    <span class="material-icons">videocam</span> MP4
+                <button class="download-btn video" onclick="downloadMedia('video')">
+                    <span class="material-icons">videocam</span> Download MP4
                 </button>
             </div>
         </div>
 
-        <p class="credit">Created by Vaishnav K</p>
+        <p class="credit">Created by Vaishnav K 🤫😜</p>
     </div>
 
     <script>
@@ -223,11 +146,11 @@
         async function fetchMedia() {
             const query = document.getElementById("query").value;
             if (!query) {
-                alert("Please enter a YouTube link or search query");
+                alert("Please enter a search term or YouTube URL");
                 return;
             }
 
-            document.getElementById("loading-container").style.display = "block";
+            document.getElementById("loading").style.display = "block";
             document.getElementById("video-preview").style.display = "none";
 
             try {
@@ -238,42 +161,41 @@
                     document.getElementById("video-title").innerText = data.data.title;
                     document.getElementById("video-preview").style.display = "block";
 
-                    // Store the download links
-                    downloadLinks.audio = data.data.audio_url;
-                    downloadLinks.video = data.data.video_url;
-
-                    // Enable buttons only if URLs are valid
-                    document.getElementById("audio-btn").disabled = !downloadLinks.audio;
-                    document.getElementById("video-btn").disabled = !downloadLinks.video;
+                    // Store download links
+                    downloadLinks.audio = `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}`;
+                    downloadLinks.video = `https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`;
                 } else {
                     alert("Failed to fetch video details");
                 }
             } catch (error) {
+                console.error("Error:", error);
                 alert("An error occurred while fetching data");
             } finally {
-                document.getElementById("loading-container").style.display = "none";
+                document.getElementById("loading").style.display = "none";
             }
         }
 
-        function downloadMedia(type) {
+        async function downloadMedia(type) {
             if (!downloadLinks[type]) {
-                alert("Download link not found, please try again!");
+                alert("Please search for a video first!");
                 return;
             }
 
-            const a = document.createElement("a");
-            a.href = downloadLinks[type];
-            a.download = `YouTube_${type}.${type === "audio" ? "mp3" : "mp4"}`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
+            try {
+                const response = await fetch(downloadLinks[type]);
+                const data = await response.json();
 
-        async function pasteFromClipboard(event) {
-            event.preventDefault();
-            const text = await navigator.clipboard.readText();
-            document.getElementById("query").value = text;
+                if (data.data && data.data.dl) {
+                    window.open(data.data.dl, "_blank");
+                } else {
+                    alert("Failed to get download link!");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred while downloading");
+            }
         }
     </script>
+
 </body>
 </html>
