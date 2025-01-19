@@ -118,6 +118,13 @@
             color: #333;
         }
 
+        #video-image {
+            width: 100%;
+            margin-top: 20px;
+            max-width: 400px;
+            border-radius: 8px;
+        }
+
         .download-buttons {
             display: flex;
             justify-content: space-between;
@@ -175,6 +182,7 @@
 
         <div id="video-preview">
             <h3 id="video-title"></h3>
+            <img id="video-image" src="" alt="Video thumbnail">
             <div class="download-buttons">
                 <button class="download-btn audio" onclick="downloadMedia('audio')">
                     <span class="material-icons">headset</span> Download MP3
@@ -236,6 +244,7 @@
 
                 if (data.data) {
                     document.getElementById("video-title").innerText = data.data.title;
+                    document.getElementById("video-image").src = "https://files.catbox.moe/jfydvw.png";  // Add the image URL here
                     document.getElementById("video-preview").style.display = "block";
                 } else {
                     alert("Failed to fetch video details");
