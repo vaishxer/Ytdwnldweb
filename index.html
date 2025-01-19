@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #fff;
+            background-color: #f9f9f9;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -24,11 +24,12 @@
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
-            border-top: 4px solid red;
         }
 
         h2 {
-            color: red;
+            color: #FF0000;
+            font-size: 26px;
+            font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -38,12 +39,13 @@
         .search-bar {
             display: flex;
             align-items: center;
+            justify-content: center;
             margin-bottom: 20px;
             position: relative;
         }
 
         input[type="text"] {
-            width: 80%;
+            width: 75%;
             padding: 12px;
             font-size: 16px;
             border: 2px solid #ddd;
@@ -65,6 +67,10 @@
 
         .paste-btn:hover {
             background-color: #45a049;
+        }
+
+        .paste-btn .material-icons {
+            font-size: 18px;
         }
 
         .error-message {
@@ -173,6 +179,21 @@
             color: #777;
             margin-top: 20px;
         }
+
+        @media (max-width: 500px) {
+            .search-bar {
+                flex-direction: column;
+            }
+
+            input[type="text"] {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .paste-btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -184,7 +205,9 @@
         </h2>
         <div class="search-bar">
             <input type="text" id="query" placeholder="Paste YouTube URL" oninput="validateURL()">
-            <button class="paste-btn" onclick="pasteURL()">Paste URL</button>
+            <button class="paste-btn" onclick="pasteURL()">
+                <span class="material-icons">content_paste</span> Paste URL
+            </button>
         </div>
 
         <p class="error-message" id="error-message">Please enter a valid YouTube URL</p>
@@ -313,21 +336,21 @@
                 const data = await response.json();
 
                 if (data.data) {
-                    clearInterval(downloadInterval);
-                    window.open(data.data.dl, "_blank");
+                    const downloadUrl = data.data.link;
+                    window.location.href = downloadUrl;
                 } else {
-                    alert("Failed to fetch download link");
+                    alert("Failed to prepare download");
                 }
             } catch {
-                alert("An error occurred while downloading");
+                alert("An error occurred while preparing download");
             } finally {
+                clearInterval(downloadInterval);
                 setTimeout(() => {
                     document.getElementById("download-loader").style.display = "none";
                     document.getElementById("download-loading-text").style.display = "none";
-                }, 2000);
+                }, 1000);
             }
         }
     </script>
-
 </body>
 </html>
