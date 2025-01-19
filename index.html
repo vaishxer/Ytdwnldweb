@@ -40,7 +40,6 @@
             flex-direction: column;
             align-items: center;
             margin-bottom: 20px;
-            position: relative;
         }
 
         input[type="text"] {
@@ -79,13 +78,12 @@
         }
 
         .loader {
-            display: none;
             width: 100%;
             height: 8px;
             background: #ddd;
-            margin-top: 10px;
             border-radius: 5px;
             overflow: hidden;
+            display: none;
         }
 
         .loading-bar {
@@ -93,6 +91,14 @@
             height: 100%;
             background: red;
             transition: width 0.3s;
+        }
+
+        .loading-text {
+            margin-top: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            color: red;
+            display: none;
         }
 
         #video-preview {
@@ -170,6 +176,7 @@
         <div class="loader" id="search-loader">
             <div class="loading-bar" id="search-loading-bar"></div>
         </div>
+        <p class="loading-text" id="search-loading-text">Fetching video... <span id="search-loading-percent">0%</span></p>
 
         <div id="video-preview">
             <h3 id="video-title"></h3>
@@ -183,6 +190,11 @@
                 </button>
             </div>
         </div>
+
+        <div class="loader" id="download-loader">
+            <div class="loading-bar" id="download-loading-bar"></div>
+        </div>
+        <p class="loading-text" id="download-loading-text">Preparing download... <span id="download-loading-percent">0%</span></p>
 
         <p class="credit">Created by Vaishnav K 🤫😜</p>
     </div>
@@ -202,18 +214,27 @@
             }
         }
 
-        function convertShortsToWatchURL(url) {
-            if (url.includes("youtube.com/shorts/")) {
-                return url.replace("youtube.com/shorts/", "youtube.com/watch?v=");
-            }
-            return url;
+        function showLoading(loaderId, textId, progressId) {
+            document.getElementById(loaderId).style.display = "block";
+            document.getElementById(textId).style.display = "block";
+            let progress = 0;
+            const interval = setInterval(() => {
+                if (progress < 100) {
+                    progress += 10;
+                    document.getElementById(progressId).innerText = progress + "%";
+                    document.getElementById(loaderId).firstElementChild.style.width = progress + "%";
+                } else {
+                    clearInterval(interval);
+                }
+            }, 300);
+            return interval;
         }
 
         async function fetchMedia() {
-            let query = document.getElementById("query").value.trim();
-            query = convertShortsToWatchURL(query);
+            const query = document.getElementById("query").value.trim();
+            if (!query) return;
 
-            document.getElementById("search-loader").style.display = "block";
+            const searchInterval = showLoading("search-loader", "search-loading-text", "search-loading-percent");
 
             try {
                 const response = await fetch(`https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`);
@@ -226,32 +247,22 @@
                 } else {
                     alert("Failed to fetch video details");
                 }
-            } catch {
-                alert("An error occurred while fetching data");
             } finally {
-                document.getElementById("search-loader").style.display = "none";
+                clearInterval(searchInterval);
             }
         }
 
         async function downloadMedia(type) {
-            let query = document.getElementById("query").value.trim();
-            query = convertShortsToWatchURL(query);
-
-            const apiUrl = type === "audio"
-                ? `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}`
-                : `https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`;
+            const query = document.getElementById("query").value.trim();
+            const apiUrl = `https://api.siputzx.my.id/api/d/ytmp${type === "audio" ? "3" : "4"}?url=${encodeURIComponent(query)}`;
+            const downloadInterval = showLoading("download-loader", "download-loading-text", "download-loading-percent");
 
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
-
-                if (data.data) {
-                    window.open(data.data.dl, "_blank");
-                } else {
-                    alert("Failed to fetch download link");
-                }
-            } catch {
-                alert("An error occurred while downloading");
+                if (data.data) window.open(data.data.dl, "_blank");
+            } finally {
+                clearInterval(downloadInterval);
             }
         }
     </script>
