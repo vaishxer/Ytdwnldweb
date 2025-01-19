@@ -168,6 +168,11 @@
             </button>
         </div>
 
+        <div class="loader" id="search-loader">
+            <div class="loading-bar" id="search-loading-bar"></div>
+        </div>
+        <p id="search-loading-text" style="display:none;">Fetching video... <span id="search-loading-percent">0%</span></p>
+
         <div id="video-preview">
             <h3 id="video-title"></h3>
             <div class="download-buttons">
@@ -180,10 +185,10 @@
             </div>
         </div>
 
-        <div class="loader" id="download-loader">
-            <div class="loading-bar" id="loading-bar"></div>
+        <div class="loader" id="download-loader" style="display: none;">
+            <div class="loading-bar" id="download-loading-bar"></div>
         </div>
-        <p id="loading-text">Preparing download... <span id="loading-percent">0%</span></p>
+        <p id="download-loading-text" style="display:none;">Preparing download... <span id="download-loading-percent">0%</span></p>
 
         <p class="credit">Created by Vaishnav K 🤫😜</p>
     </div>
@@ -210,17 +215,18 @@
                 return;
             }
 
-            document.getElementById("download-loader").style.display = "block";
-            document.getElementById("loading-text").style.display = "block";
+            // Show the search loading bar
+            document.getElementById("search-loader").style.display = "block";
+            document.getElementById("search-loading-text").style.display = "block";
 
             let progress = 0;
-            const interval = setInterval(() => {
+            const searchInterval = setInterval(() => {
                 if (progress < 100) {
                     progress += 10;
-                    document.getElementById("loading-bar").style.width = progress + "%";
-                    document.getElementById("loading-percent").innerText = progress + "%";
+                    document.getElementById("search-loading-bar").style.width = progress + "%";
+                    document.getElementById("search-loading-percent").innerText = progress + "%";
                 } else {
-                    clearInterval(interval);
+                    clearInterval(searchInterval);
                 }
             }, 300);
 
@@ -237,11 +243,11 @@
             } catch {
                 alert("An error occurred while fetching data");
             } finally {
-                clearInterval(interval);
+                clearInterval(searchInterval);
                 setTimeout(() => {
-                    document.getElementById("download-loader").style.display = "none";
-                    document.getElementById("loading-text").style.display = "none";
-                }, 2000);
+                    document.getElementById("search-loader").style.display = "none";
+                    document.getElementById("search-loading-text").style.display = "none";
+                }, 1000);
             }
         }
 
@@ -251,17 +257,18 @@
                 ? `https://api.siputzx.my.id/api/d/ytmp3?url=${encodeURIComponent(query)}`
                 : `https://api.siputzx.my.id/api/d/ytmp4?url=${encodeURIComponent(query)}`;
 
+            // Show the download loading bar
             document.getElementById("download-loader").style.display = "block";
-            document.getElementById("loading-text").style.display = "block";
+            document.getElementById("download-loading-text").style.display = "block";
 
             let progress = 0;
-            const interval = setInterval(() => {
+            const downloadInterval = setInterval(() => {
                 if (progress < 100) {
                     progress += 10;
-                    document.getElementById("loading-bar").style.width = progress + "%";
-                    document.getElementById("loading-percent").innerText = progress + "%";
+                    document.getElementById("download-loading-bar").style.width = progress + "%";
+                    document.getElementById("download-loading-percent").innerText = progress + "%";
                 } else {
-                    clearInterval(interval);
+                    clearInterval(downloadInterval);
                 }
             }, 300);
 
@@ -270,7 +277,7 @@
                 const data = await response.json();
 
                 if (data.data) {
-                    clearInterval(interval);
+                    clearInterval(downloadInterval);
                     window.open(data.data.dl, "_blank");
                 } else {
                     alert("Failed to fetch download link");
@@ -280,7 +287,7 @@
             } finally {
                 setTimeout(() => {
                     document.getElementById("download-loader").style.display = "none";
-                    document.getElementById("loading-text").style.display = "none";
+                    document.getElementById("download-loading-text").style.display = "none";
                 }, 2000);
             }
         }
