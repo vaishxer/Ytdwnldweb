@@ -27,6 +27,19 @@
             border-top: 4px solid red;
         }
 
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 0, 0, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
         h2 {
             color: red;
             display: flex;
@@ -165,6 +178,10 @@
 </head>
 <body>
 
+    <div class="notification" id="notification">
+        Fetching may take a minute or more. Please stay on the page.
+    </div>
+
     <div class="container">
         <h2>
             <span class="material-icons">play_circle_filled</span>
@@ -200,6 +217,14 @@
     </div>
 
     <script>
+        function showNotification() {
+            const notification = document.getElementById("notification");
+            notification.style.display = "block";
+            setTimeout(() => {
+                notification.style.display = "none";
+            }, 5000);
+        }
+
         function validateURL() {
             const inputField = document.getElementById("query");
             const errorMessage = document.getElementById("error-message");
@@ -215,6 +240,8 @@
         }
 
         async function fetchMedia() {
+            showNotification();
+
             const query = document.getElementById("query").value.trim();
             if (!query) return;
 
@@ -243,25 +270,6 @@
                 clearInterval(interval);
                 document.getElementById("search-loader").style.display = "none";
                 document.getElementById("search-loading-text").style.display = "none";
-            }
-        }
-
-        async function downloadMedia(button, type) {
-            button.classList.add("loading");
-            button.innerHTML = "Downloading...";
-
-            const query = document.getElementById("query").value.trim();
-            const apiUrl = `https://api.siputzx.my.id/api/d/ytmp${type === "audio" ? "3" : "4"}?url=${encodeURIComponent(query)}`;
-
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                if (data.data) window.open(data.data.dl, "_blank");
-            } catch {
-                alert("Download failed");
-            } finally {
-                button.classList.remove("loading");
-                button.innerHTML = type === "audio" ? "Download MP3" : "Download MP4";
             }
         }
     </script>
