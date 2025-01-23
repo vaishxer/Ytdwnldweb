@@ -44,8 +44,8 @@
             width: 100%;
             padding: 15px;
             display: flex;
-            justify-content: center;
-            position: relative;
+            flex-direction: column;
+            align-items: center;
             margin-top: 20px;
         }
 
@@ -59,28 +59,10 @@
             transition: 0.3s;
             text-align: center;
             background: white;
-            padding-right: 50px; /* Space for clear button */
         }
 
         input:focus {
             border-color: #d32f2f;
-        }
-
-        .clear-btn {
-            position: absolute;
-            right: 10%;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 50%;
-            padding: 5px;
-            display: none;
-        }
-
-        .clear-btn .material-icons {
-            font-size: 18px;
-            color: #555;
         }
 
         .fab {
@@ -205,8 +187,7 @@
     </div>
 
     <div class="search-bar">
-        <input type="text" id="query" placeholder="Paste YouTube URL" oninput="toggleClearButton()">
-        <span class="material-icons clear-btn" id="clear-btn" onclick="clearInput()">close</span>
+        <input type="text" id="query" placeholder="Paste YouTube URL" oninput="validateURL()">
     </div>
 
     <div class="fab" onclick="fetchMedia()">
@@ -234,20 +215,24 @@
     <p class="credit">Created by Vaishnav K</p>
 
     <script>
-        function toggleClearButton() {
-            const inputField = document.getElementById("query");
-            const clearBtn = document.getElementById("clear-btn");
+        const quotes = [
+            "Patience is the key to success!",
+            "Good things take time.",
+            "Your download is coming, hold tight!",
+            "Nothing worth having comes easy.",
+            "Keep calm and let technology do the work.",
+            "Loading... good vibes only!"
+        ];
 
-            if (inputField.value.trim()) {
-                clearBtn.style.display = "inline";
-            } else {
-                clearBtn.style.display = "none";
-            }
+        function getRandomQuote() {
+            return quotes[Math.floor(Math.random() * quotes.length)];
         }
 
-        function clearInput() {
-            document.getElementById("query").value = "";
-            toggleClearButton();
+        function validateURL() {
+            const inputField = document.getElementById("query");
+            const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)/;
+
+            inputField.style.borderColor = youtubeRegex.test(inputField.value.trim()) ? "#ddd" : "red";
         }
 
         async function fetchMedia() {
@@ -255,7 +240,7 @@
             if (!query) return;
 
             document.getElementById("loader").style.display = "block";
-            document.getElementById("quote").innerText = "Fetching video details...";
+            document.getElementById("quote").innerText = getRandomQuote();
             document.getElementById("quote").style.display = "block";
 
             try {
@@ -270,6 +255,7 @@
                 }
             } finally {
                 document.getElementById("loader").style.display = "none";
+                document.getElementById("quote").style.display = "none";
             }
         }
     </script>
