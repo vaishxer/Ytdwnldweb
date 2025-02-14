@@ -1,0 +1,15 @@
+{
+  "name": "whatsapp-profile-picture-changer",
+  "version": "1.0.0",
+  "description": "A web app to change WhatsApp profile picture",
+  "main": "index.js",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "baileys": "^5.0.0",
+    "express": "^4.17.1",
+    "multer": "^1.4.2",
+    "qrcode-terminal": "^0.12.0"
+  }
+}
