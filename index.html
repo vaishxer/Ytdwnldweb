@@ -1,3 +1,71 @@
-<a href="20241212_152805.png" download>
-<button>Download Image</button>
-</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Profile Picture Changer</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #upload { margin: 20px; }
+        #preview { width: 200px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Change WhatsApp Profile Picture</h1>
+    <form id="uploadForm">
+        <label for="imageUpload">Upload Image:</label><br>
+        <input type="file" id="imageUpload" accept="image/*"><br><br>
+        <button type="submit">Change Profile Picture</button>
+    </form>
+
+    <h3>Preview:</h3>
+    <img id="preview" src="" alt="Image preview" style="display:none;">
+    
+    <div id="qrCodeSection" style="display:none;">
+        <h3>Scan this QR code with WhatsApp Web</h3>
+        <pre id="qrCode"></pre>
+    </div>
+
+    <script>
+        const imageUpload = document.getElementById('imageUpload');
+        const preview = document.getElementById('preview');
+        const qrCodeSection = document.getElementById('qrCodeSection');
+        const qrCodeText = document.getElementById('qrCode');
+        const uploadForm = document.getElementById('uploadForm');
+
+        // Preview the image once uploaded
+        imageUpload.addEventListener('change', function() {
+            const file = imageUpload.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle form submission to trigger the profile picture change
+        uploadForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData();
+            formData.append('file', imageUpload.files[0]);
+
+            fetch('/api/change-profile', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.qrCode) {
+                    qrCodeSection.style.display = 'block';
+                    qrCodeText.textContent = data.qrCode; // Show the QR code in the console for scanning
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
